@@ -22,62 +22,53 @@ export function CalendarCompare() {
         )
     })
 
+    // 192,214,172
     return(
-        <div className="grid grid-cols-2 place-items-center">
-            <div className="grid-rows-4">
-                <div className="pt-12">
+        <div className="grid grid-cols-2">
+            <div className="grid-rows-4 pl-4">
+                <div className="pt-12 grid grid-cols-2 grid-gap-2 pb-4">
                     <select
-                        className="select w-full max-w-xs"
+                        className="select select-bordered w-full max-w-xs"
                         onChange={(event) => {
                             setFirstLocation(event.target.value)
                             setFirstTimezone(moment.tz.zone(event.target.value))
                         }}>
                         { timezonesSelection }
                     </select>
+                    <select
+                        className="select select-bordered w-full max-w-xs"
+                        onChange={(event) => {
+                            setSecondLoaction(event.target.value)
+                            setSecondTimezone(moment.tz.zone(event.target.value))
+                        }}>
+                        { timezonesSelection }
+                    </select>
                 </div>
 
-                <div>
-                    <input 
-                        type="date"
-                        className="input input-bordered w-full max-w-xs"/>
-                </div>
-                
-                <div>
-                    <input
-                        type="number"
-                        placeholder="Meeting Length"
-                        onBlur={(event) => setMeetingLength(parseInt(event.target.value))} 
-                        className="input input-bordered w-full max-w-xs" />
+                <div className="grid grid-cols-2 grid-gap-2">
+                    <div>
+                        <input 
+                            type="date"
+                            className="input input-bordered w-full max-w-xs"/>
+                    </div>
+                    
+                    <div>
+                        <input
+                            type="number"
+                            placeholder="Meeting Length"
+                            onBlur={(event) => setMeetingLength(parseInt(event.target.value))} 
+                            className="input input-bordered w-full max-w-xs" />
+                    </div>
                 </div>
             </div>
-            
-            <div className="grid-rows-3">
-                <select
-                    className="select w-full max-w-xs"
-                    onChange={(event) => {
-                        setSecondLoaction(event.target.value)
-                        setSecondTimezone(moment.tz.zone(event.target.value))
-                    }}>
-                    { timezonesSelection }
-                </select>
-            </div>
-            
 
-            <div className="w-3/4">
+            <div className="w-3/4 pt-12">
                 <Calendar
                     calendarId={1}
                     meeting={getMeeting(firstTimezone ?? null, meetingLength)}
                     date={date}
-                    timezone={firstTimezone ?? null} />
-            </div>
-
-            <div className="w-3/4">
-                <Calendar
-                    calendarId={2}
-                    meeting={getMeeting(secondTimezone ?? null, meetingLength)}
-                    date={date}
-                    timezone={secondTimezone ?? null}
-                    comparedTimezone={firstTimezone ?? null}/>
+                    timezone1={firstTimezone ?? null}
+                    timezone2={secondTimezone ?? null} />
             </div>
         </div>
     )
