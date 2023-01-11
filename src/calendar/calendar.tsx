@@ -6,13 +6,11 @@ import { Meeting } from "../dtos/meeting";
 export default function Calendar({
         calendarId,
         meeting,
-        date,
         timezone1,
         timezone2,
     } : { 
         calendarId: number,
         meeting: Meeting,
-        date: Date,
         timezone1: MomentZone | null,
         timezone2?: MomentZone | null}) {
 
@@ -20,20 +18,20 @@ export default function Calendar({
 
     let hourSections: any[] = []
 
-    let startTime: Moment = moment.tz(timezone1?.name ?? "")?.startOf("day")
+    let startTimeLocal: Moment = moment.tz()
+    let startTimeForeign: Moment = moment.tz()
 
-    if (timezone2) {
-        startTime = moment.tz(timezone2?.name ?? "")?.startOf("day")
+    if (timezone1 && timezone2) {
+        startTimeLocal = moment.tz(timezone1.name)?.startOf("day")
+        startTimeForeign = startTimeLocal?.clone().tz(timezone2.name)
     }
-
-    let convertedStartTime: Moment = startTime?.tz(timezone1?.name ?? "") ?? null;
 
     for(var count = 0; count < 25; count++) {
         const currentCount = count * 10
         hourSections.push(
             <div key={`${calendarId}-${count}`} className="grid grid-cols-6">
                 <div className="col-span-1 border-t-[1px] border-t-slate-500 border-b-slate-500">
-                    { count == 0 ? convertedStartTime?.format("hh:mm a") : incrementToTime(convertedStartTime)  }
+                    { count == 0 ? startTimeLocal?.format("hh:mm a") : incrementToTime(startTimeLocal)  }
                 </div>
                 <div className="
                     col-span-4
@@ -41,15 +39,12 @@ export default function Calendar({
                     h-24
                     border-t-[1px] border-t-slate-500 border-b-slate-500">
                     <div
-                        className="relative h-6 border-t-[1px] border-t-slate-500 border-b-slate-500 hover:border-t-[#df9896] border-t-[1px]"
+                        className="relative h-6 border-b-slate-500 hover:border-t-[#df9896] border-t-[1px]"
                         onClick={() => {
                             setBoxStart(currentCount + 2)
                         }}>
                             { (boxStart && boxStart == currentCount + 2) &&
-                                <div
-                                    className="w-3/4 bg-[#9fba86] absolute z-10 rounded mx-6"
-                                    style={{height: `${24 * meeting.length}px`}}>
-                                </div>
+                                getMeetingBlock(meeting.length)
                             }
                     </div>
                     <div
@@ -58,10 +53,7 @@ export default function Calendar({
                             setBoxStart(currentCount + 4)
                         }}>
                             { (boxStart && boxStart == currentCount + 4) &&
-                                <div 
-                                    className="w-3/4 bg-[#9fba86] absolute z-10 rounded mx-6"
-                                    style={{height: `${24 * meeting.length}px`}}>
-                                </div>
+                                getMeetingBlock(meeting.length)
                             }
                     </div>
                     <div
@@ -70,10 +62,7 @@ export default function Calendar({
                             setBoxStart(currentCount + 6)
                         }}>
                             { (boxStart && boxStart == currentCount + 6) &&
-                                <div
-                                    className="w-3/4 bg-[#9fba86] absolute z-10 rounded mx-6"
-                                    style={{height: `${24 * meeting.length}px`}}>
-                                </div>
+                                getMeetingBlock(meeting.length)
                             }
                     </div>
                     <div
@@ -82,15 +71,12 @@ export default function Calendar({
                             setBoxStart(currentCount + 8)
                         }}>
                             { (boxStart && boxStart == currentCount + 8) &&
-                                <div
-                                    className="w-3/4 bg-[#9fba86] absolute z-10 rounded mx-6"
-                                    style={{height: `${24 * meeting.length}px`}}>
-                                </div>
+                                getMeetingBlock(meeting.length)
                             }
                     </div>
                 </div>
                 <div className="col-span-1 border-t-[1px] border-t-slate-500 border-b-slate-500">
-                    { count == 0 ? startTime?.format("hh:mm a") : incrementToTime(startTime)  }
+                    { count == 0 ? startTimeForeign?.format("hh:mm a") : incrementToTime(startTimeForeign)  }
                 </div>
             </div>
         )
@@ -98,9 +84,30 @@ export default function Calendar({
 
     return (
         <div className="h-full w-full ">
+            <div className="grid grid-cols-2">
+                <div>
+                    { parseTimezoneName(timezone1?.name ?? "")}
+                </div>
+                <div className="text-right">
+                    { parseTimezoneName(timezone2?.name ?? "")}
+                </div>
+            </div>
             <div className="h-full w-full border-b-[1px]">
                 { hourSections }
             </div>
+        </div>
+    )
+}
+
+function getMeetingBlock(meetingLength: number) {
+    return (
+        <div
+            className="w-full bg-[#9fba86] absolute z-10 rounded"
+            style={{height: `${24 * meetingLength}px`}}>
+                <div className="grid grid-cols-2">
+                    <p className="text-sm">From {"12:00 AM"} to {"2:00 PM"}</p>
+                    <p className="text-sm">From {"12:00 AM"} to {"2:00 PM"}</p>
+                </div>
         </div>
     )
 }
@@ -109,4 +116,8 @@ function incrementToTime(startTime: Moment): string {
     startTime?.add(1, "hours");
 
     return startTime?.format("hh:mm a")
+}
+
+function parseTimezoneName(name: string): string {
+    return name.replaceAll("_", " ")
 }

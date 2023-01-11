@@ -11,8 +11,7 @@ export function CalendarCompare() {
     const [secondTimezone, setSecondTimezone] = useState<MomentZone | null>();
 
     const [meetingLength, setMeetingLength] = useState(0);
-
-    let date = new Date();
+    const [date, setDate] = useState(new Date());
 
     const timezones: string[] = moment.tz.names();
     const timezonesSelection: any[] = []
@@ -22,11 +21,14 @@ export function CalendarCompare() {
         )
     })
 
-    // 192,214,172
     return(
         <div className="grid grid-cols-2">
             <div className="grid-rows-4 pl-4">
-                <div className="pt-12 grid grid-cols-2 grid-gap-2 pb-4">
+                <div className="pt-12 grid grid-cols-2 grid-gap-2">
+                    <h3>Timezone 1</h3>
+                    <h3>Timezone 2</h3>
+                </div>
+                <div className="grid grid-cols-2 grid-gap-2 pb-4">
                     <select
                         className="select select-bordered w-full max-w-xs"
                         onChange={(event) => {
@@ -49,7 +51,8 @@ export function CalendarCompare() {
                     <div>
                         <input 
                             type="date"
-                            className="input input-bordered w-full max-w-xs"/>
+                            className="input input-bordered w-full max-w-xs"
+                            onBlur={(event) => setDate(new Date(event.target.value))}/>
                     </div>
                     
                     <div>
@@ -60,13 +63,13 @@ export function CalendarCompare() {
                             className="input input-bordered w-full max-w-xs" />
                     </div>
                 </div>
+                <p> { date.toDateString() } </p>
             </div>
 
             <div className="w-3/4 pt-12">
                 <Calendar
                     calendarId={1}
                     meeting={getMeeting(firstTimezone ?? null, meetingLength)}
-                    date={date}
                     timezone1={firstTimezone ?? null}
                     timezone2={secondTimezone ?? null} />
             </div>
