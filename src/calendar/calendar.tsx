@@ -53,7 +53,7 @@ export default function Calendar({
                                     startTimeLocal.clone(),
                                     startTimeForeign.clone(),
                                     0,
-                                    meeting.length)
+                                    meeting.lengthMinutes)
                             }
                     </div>
                     <div
@@ -66,7 +66,7 @@ export default function Calendar({
                                     startTimeLocal.clone(),
                                     startTimeForeign.clone(),
                                     15,
-                                    meeting.length)
+                                    meeting.lengthMinutes)
                             }
                     </div>
                     <div
@@ -79,7 +79,7 @@ export default function Calendar({
                                     startTimeLocal.clone(),
                                     startTimeForeign.clone(),
                                     30,
-                                    meeting.length)
+                                    meeting.lengthMinutes)
                             }
                     </div>
                     <div
@@ -92,7 +92,7 @@ export default function Calendar({
                                     startTimeLocal.clone(),
                                     startTimeForeign.clone(),
                                     45,
-                                    meeting.length)
+                                    meeting.lengthMinutes)
                             }
                     </div>
                 </div>
@@ -106,6 +106,20 @@ export default function Calendar({
 
     return (
         <div className="h-full w-full ">
+            <div className="w-full flex flex-row place-content-end">
+                <div className="form-control pr-4">
+                    <label className="cursor-pointer label">
+                        <span className="label-text pr-2">Only Waking Hours</span> 
+                        <input type="checkbox" className="toggle toggle-primary" checked />
+                    </label>
+                </div>
+                <div className="form-control">
+                    <label className="cursor-pointer label">
+                        <span className="label-text pr-2">Only Business Hours</span> 
+                        <input type="checkbox" className="toggle toggle-primary" checked />
+                    </label>
+                </div>
+            </div>
             <div className="grid grid-cols-2">
                 <div>
                     { parseTimezoneName(timezone1?.name ?? "")}
@@ -132,6 +146,7 @@ function getMeetingBlock(
 
     startTimeLocal.add(minuteOffset, "minutes")
     startTimeForeign.add(minuteOffset, "minutes")
+    meetingLength = meetingLength < 15 ? 1 : meetingLength / 15
 
     return (
         <div

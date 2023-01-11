@@ -13,6 +13,8 @@ export function CalendarCompare() {
     const [meetingLength, setMeetingLength] = useState(1);
     const [date, setDate] = useState(new Date());
 
+    let meetingLengthMinutes: 15;
+
     const timezones: string[] = moment.tz.names();
     const timezonesSelection: any[] = []
     timezones.forEach((timezone) => {
@@ -22,33 +24,43 @@ export function CalendarCompare() {
     })
 
     return(
-        <div className="grid grid-cols-2">
-            <div className="grid-rows-4 pl-4">
-                <div className="pt-12 grid grid-cols-2 grid-gap-2">
-                    <h3>Timezone 1</h3>
-                    <h3>Timezone 2</h3>
-                </div>
+        <div className="grid sm:grid-cols-1 md:grid-cols-2">
+            <div className="pt-4 grid-rows-4 pl-4">
                 <div className="grid grid-cols-2 grid-gap-2 pb-4">
-                    <select
-                        className="select select-bordered w-full max-w-xs"
-                        onChange={(event) => {
-                            setFirstLocation(event.target.value)
-                            setFirstTimezone(moment.tz.zone(event.target.value))
-                        }}>
-                        { timezonesSelection }
-                    </select>
-                    <select
-                        className="select select-bordered w-full max-w-xs"
-                        onChange={(event) => {
-                            setSecondLoaction(event.target.value)
-                            setSecondTimezone(moment.tz.zone(event.target.value))
-                        }}>
-                        { timezonesSelection }
-                    </select>
+                    <div>
+                        <label className="label">
+                            <span className="label-text">Local Timezone</span>
+                        </label>
+                        <select
+                            className="select select-bordered w-full max-w-xs"
+                            onChange={(event) => {
+                                setFirstLocation(event.target.value)
+                                setFirstTimezone(moment.tz.zone(event.target.value))
+                            }}>
+                            { timezonesSelection }
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label className="label">
+                            <span className="label-text">Foreign Timezone</span>
+                        </label>
+                        <select
+                            className="select select-bordered w-full max-w-xs"
+                            onChange={(event) => {
+                                setSecondLoaction(event.target.value)
+                                setSecondTimezone(moment.tz.zone(event.target.value))
+                            }}>
+                            { timezonesSelection }
+                        </select>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-2 grid-gap-2">
                     <div>
+                        <label className="label">
+                            <span className="label-text">Local Date</span>
+                        </label>
                         <input 
                             type="date"
                             className="input input-bordered w-full max-w-xs"
@@ -56,11 +68,17 @@ export function CalendarCompare() {
                     </div>
                     
                     <div>
+                        <label className="label">
+                            <span className="label-text">Meeting Length (Minutes)</span>
+                        </label>
                         <input
                             type="number"
-                            placeholder="Meeting Length"
+                            placeholder="Meeting Length in Minutes"
                             value={meetingLength}
-                            onChange={(event) => setMeetingLength(parseInt(event.target.value))} 
+                            onChange={(event) => {
+                                let minutes = parseInt(event.target.value)
+                                setMeetingLength(minutes)
+                            }} 
                             className="input input-bordered w-full max-w-xs" />
                     </div>
                 </div>
@@ -81,6 +99,6 @@ export function CalendarCompare() {
 function getMeeting(timezone: MomentZone | null, length: number): Meeting {
     return {
         timezone: timezone,
-        length: length
+        lengthMinutes: length
     }
 }
