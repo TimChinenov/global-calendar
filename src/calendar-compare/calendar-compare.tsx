@@ -63,13 +63,13 @@ export function CalendarCompare() {
                             className="input input-bordered w-full max-w-xs" />
                     </div>
                 </div>
-                <p> { date.toDateString() } </p>
             </div>
 
             <div className="w-3/4 pt-12">
                 <Calendar
                     calendarId={1}
                     meeting={getMeeting(firstTimezone ?? null, meetingLength)}
+                    date={date}
                     timezone1={firstTimezone ?? null}
                     timezone2={secondTimezone ?? null} />
             </div>

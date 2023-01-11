@@ -6,23 +6,27 @@ import { Meeting } from "../dtos/meeting";
 export default function Calendar({
         calendarId,
         meeting,
+        date,
         timezone1,
         timezone2,
     } : { 
         calendarId: number,
         meeting: Meeting,
+        date: Date
         timezone1: MomentZone | null,
         timezone2?: MomentZone | null}) {
 
     const [boxStart, setBoxStart] = useState(0);
 
+
+    let usedDates: Set<string> = new Set<string>();
     let hourSections: any[] = []
 
     let startTimeLocal: Moment = moment.tz()
     let startTimeForeign: Moment = moment.tz()
 
     if (timezone1 && timezone2) {
-        startTimeLocal = moment.tz(timezone1.name)?.startOf("day")
+        startTimeLocal = moment(getFormattedDate(date)).tz(timezone1.name)?.startOf("day")
         startTimeForeign = startTimeLocal?.clone().tz(timezone2.name)
     }
 
@@ -31,7 +35,8 @@ export default function Calendar({
         hourSections.push(
             <div key={`${calendarId}-${count}`} className="grid grid-cols-6">
                 <div className="col-span-1 border-t-[1px] border-t-slate-500 border-b-slate-500">
-                    { count == 0 ? startTimeLocal?.format("hh:mm a") : incrementToTime(startTimeLocal)  }
+                    <p>{ count == 0 ? startTimeLocal?.format("hh:mm a") : incrementToTime(startTimeLocal) }</p>
+                    <p>{ startTimeLocal.format("hh:mm a") === ("12:00 am") && startTimeLocal.format('LL') }</p>
                 </div>
                 <div className="
                     col-span-4
@@ -75,8 +80,9 @@ export default function Calendar({
                             }
                     </div>
                 </div>
-                <div className="col-span-1 border-t-[1px] border-t-slate-500 border-b-slate-500">
-                    { count == 0 ? startTimeForeign?.format("hh:mm a") : incrementToTime(startTimeForeign)  }
+                <div className="col-span-1 border-t-[1px] border-t-slate-500 border-b-slate-500 text-right">
+                    <p>{ count == 0 ? startTimeForeign?.format("hh:mm a") : incrementToTime(startTimeForeign)  }</p>
+                    <p>{ startTimeForeign.format("hh:mm a") === ("12:00 am") && startTimeForeign.format('LL') }</p>
                 </div>
             </div>
         )
@@ -120,4 +126,14 @@ function incrementToTime(startTime: Moment): string {
 
 function parseTimezoneName(name: string): string {
     return name.replaceAll("_", " ")
+}
+
+function getFormattedDate(date: Date): string {
+    let year = date.getFullYear().toString();
+    let month = (date.getMonth() + 1).toString()
+    let day = date.getDay().toString()
+    month = month.length < 2 ? "0" + month : month
+    day = day.length < 2 ? "0" + day : day
+
+    return `${year}-${month}-${day}`
 }
