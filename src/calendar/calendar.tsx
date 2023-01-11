@@ -98,7 +98,7 @@ export default function Calendar({
 
     return (
         <div className="h-full w-full ">
-            <div className="h-full w-full border-b-[1px]">
+            <div className="h-full w-full border-b-[1px]" >
                 { hourSections }
             </div>
         </div>
