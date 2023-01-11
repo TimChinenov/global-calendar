@@ -49,7 +49,11 @@ export default function Calendar({
                             setBoxStart(currentCount + 2)
                         }}>
                             { (boxStart && boxStart == currentCount + 2) &&
-                                getMeetingBlock(meeting.length)
+                                getMeetingBlock(
+                                    startTimeLocal.clone(),
+                                    startTimeForeign.clone(),
+                                    0,
+                                    meeting.length)
                             }
                     </div>
                     <div
@@ -58,7 +62,11 @@ export default function Calendar({
                             setBoxStart(currentCount + 4)
                         }}>
                             { (boxStart && boxStart == currentCount + 4) &&
-                                getMeetingBlock(meeting.length)
+                                getMeetingBlock(
+                                    startTimeLocal.clone(),
+                                    startTimeForeign.clone(),
+                                    15,
+                                    meeting.length)
                             }
                     </div>
                     <div
@@ -67,7 +75,11 @@ export default function Calendar({
                             setBoxStart(currentCount + 6)
                         }}>
                             { (boxStart && boxStart == currentCount + 6) &&
-                                getMeetingBlock(meeting.length)
+                                getMeetingBlock(
+                                    startTimeLocal.clone(),
+                                    startTimeForeign.clone(),
+                                    30,
+                                    meeting.length)
                             }
                     </div>
                     <div
@@ -76,7 +88,11 @@ export default function Calendar({
                             setBoxStart(currentCount + 8)
                         }}>
                             { (boxStart && boxStart == currentCount + 8) &&
-                                getMeetingBlock(meeting.length)
+                                getMeetingBlock(
+                                    startTimeLocal.clone(),
+                                    startTimeForeign.clone(),
+                                    45,
+                                    meeting.length)
                             }
                     </div>
                 </div>
@@ -105,14 +121,25 @@ export default function Calendar({
     )
 }
 
-function getMeetingBlock(meetingLength: number) {
+function getMeetingBlock(
+    startTimeLocal: Moment,
+    startTimeForeign: Moment,
+    minuteOffset: number,
+    meetingLength: number) {
+    if (!meetingLength) {
+        return
+    }
+
+    startTimeLocal.add(minuteOffset, "minutes")
+    startTimeForeign.add(minuteOffset, "minutes")
+
     return (
         <div
             className="w-full bg-[#9fba86] absolute z-10 rounded"
             style={{height: `${24 * meetingLength}px`}}>
                 <div className="grid grid-cols-2">
-                    <p className="text-sm">From {"12:00 AM"} to {"2:00 PM"}</p>
-                    <p className="text-sm">From {"12:00 AM"} to {"2:00 PM"}</p>
+                    <p className="text-sm text-center">From {startTimeLocal.format("hh:mm a")} to {startTimeLocal.add(meetingLength * 15, "minutes").format("hh:mm a")} {startTimeLocal.format('z')}</p>
+                    <p className="text-sm text-center">From {startTimeForeign.format("hh:mm a")} to {startTimeForeign.add(meetingLength * 15, "minutes").format("hh:mm a")} {startTimeForeign.format('z')}</p>
                 </div>
         </div>
     )

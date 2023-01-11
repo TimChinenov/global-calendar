@@ -10,7 +10,7 @@ export function CalendarCompare() {
     const [firstTimezone, setFirstTimezone] = useState<MomentZone | null>();
     const [secondTimezone, setSecondTimezone] = useState<MomentZone | null>();
 
-    const [meetingLength, setMeetingLength] = useState(0);
+    const [meetingLength, setMeetingLength] = useState(1);
     const [date, setDate] = useState(new Date());
 
     const timezones: string[] = moment.tz.names();
@@ -59,7 +59,8 @@ export function CalendarCompare() {
                         <input
                             type="number"
                             placeholder="Meeting Length"
-                            onBlur={(event) => setMeetingLength(parseInt(event.target.value))} 
+                            value={meetingLength}
+                            onChange={(event) => setMeetingLength(parseInt(event.target.value))} 
                             className="input input-bordered w-full max-w-xs" />
                     </div>
                 </div>
