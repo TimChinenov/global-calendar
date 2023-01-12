@@ -1,5 +1,6 @@
 import moment, { MomentZone } from "moment-timezone";
 import { useState } from "react";
+import Autocomplete from "../autocomplete/autocomplete";
 import Calendar from "../calendar/calendar";
 import { Meeting } from "../dtos/meeting";
 
@@ -12,6 +13,8 @@ export function CalendarCompare() {
 
     const [meetingLength, setMeetingLength] = useState(1);
     const [date, setDate] = useState(new Date());
+
+    const [isSelected, setIsSelected] = useState(false)
 
     let meetingLengthMinutes: 15;
 
@@ -26,7 +29,8 @@ export function CalendarCompare() {
     return(
         <div className="grid sm:grid-cols-1 md:grid-cols-2">
             <div className="pt-4 grid-rows-4 pl-4">
-                <div className="grid grid-cols-2 grid-gap-2 pb-4">
+                <div className="grid grid-cols-3 grid-gap-2 pb-4">
+                    <Autocomplete />
                     <div>
                         <label className="label">
                             <span className="label-text">Local Timezone</span>

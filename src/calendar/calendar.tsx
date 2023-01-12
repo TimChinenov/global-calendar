@@ -17,6 +17,13 @@ export default function Calendar({
         timezone2?: MomentZone | null}) {
 
     const [boxStart, setBoxStart] = useState(0);
+    const [onlyBusinessHours, setOnlyBusinessHours] = useState(false);
+    const [onlyWakingHours, setOnlyWakingHours] = useState(false);
+
+    const wakingHourStart = 5
+    const wakingHourEnd = 21
+    const businessHourStart = 6
+    const businessHourEnd = 18
 
 
     let usedDates: Set<string> = new Set<string>();
@@ -32,6 +39,28 @@ export default function Calendar({
 
     for(var count = 0; count < 25; count++) {
         const currentCount = count * 10
+
+        if (onlyWakingHours
+            && ((startTimeLocal.hour() <= wakingHourStart || startTimeLocal.hour() >= wakingHourEnd)
+            || (startTimeForeign.hour() <= wakingHourStart || startTimeForeign.hour() >= wakingHourEnd))) {
+                if (count != 0) {
+                    incrementToTime(startTimeLocal)
+                    incrementToTime(startTimeForeign)
+                }
+                
+                continue
+        }
+        else if (onlyBusinessHours
+            && ((startTimeLocal.hour() <= businessHourStart || startTimeLocal.hour() >= businessHourEnd)
+            || (startTimeForeign.hour() <= businessHourStart || startTimeForeign.hour() >= businessHourEnd))) {
+                if (count != 0) {
+                    incrementToTime(startTimeLocal)
+                    incrementToTime(startTimeForeign)
+                }
+                
+                continue
+        }
+
         hourSections.push(
             <div key={`${calendarId}-${count}`} className="grid grid-cols-6">
                 <div className="col-span-1 border-t-[1px] border-t-slate-500 border-b-slate-500">
@@ -110,13 +139,27 @@ export default function Calendar({
                 <div className="form-control pr-4">
                     <label className="cursor-pointer label">
                         <span className="label-text pr-2">Only Waking Hours</span> 
-                        <input type="checkbox" className="toggle toggle-primary" checked />
+                        <input
+                            type="checkbox"
+                            className="toggle toggle-primary"
+                            checked={onlyWakingHours}
+                            onChange={() => {
+                                setOnlyBusinessHours(false)
+                                setOnlyWakingHours(!onlyWakingHours)
+                            }}/>
                     </label>
                 </div>
                 <div className="form-control">
                     <label className="cursor-pointer label">
                         <span className="label-text pr-2">Only Business Hours</span> 
-                        <input type="checkbox" className="toggle toggle-primary" checked />
+                        <input
+                            type="checkbox"
+                            className="toggle toggle-primary"
+                            checked={onlyBusinessHours}
+                            onChange={() => {
+                                setOnlyWakingHours(false)
+                                setOnlyBusinessHours(!onlyBusinessHours)
+                            }}/>
                     </label>
                 </div>
             </div>
