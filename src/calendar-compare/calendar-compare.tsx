@@ -29,35 +29,13 @@ export function CalendarCompare() {
     return(
         <div className="grid sm:grid-cols-1 md:grid-cols-2">
             <div className="pt-4 grid-rows-4 pl-4">
-                <div className="grid grid-cols-3 grid-gap-2 pb-4">
-                    <Autocomplete />
-                    <div>
-                        <label className="label">
-                            <span className="label-text">Local Timezone</span>
-                        </label>
-                        <select
-                            className="select select-bordered w-full max-w-xs"
-                            onChange={(event) => {
-                                setFirstLocation(event.target.value)
-                                setFirstTimezone(moment.tz.zone(event.target.value))
-                            }}>
-                            { timezonesSelection }
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label className="label">
-                            <span className="label-text">Foreign Timezone</span>
-                        </label>
-                        <select
-                            className="select select-bordered w-full max-w-xs"
-                            onChange={(event) => {
-                                setSecondLoaction(event.target.value)
-                                setSecondTimezone(moment.tz.zone(event.target.value))
-                            }}>
-                            { timezonesSelection }
-                        </select>
-                    </div>
+                <div className="grid grid-cols-2 grid-gap-2 pb-4">
+                    <Autocomplete
+                        title={"Local Timezone"}
+                        setValue={(value: string) => setFirstTimezone(moment.tz.zone(value))}/>
+                    <Autocomplete
+                        title={"Foreign Timezone"}
+                        setValue={(value: string) => setSecondTimezone(moment.tz.zone(value))}/>
                 </div>
 
                 <div className="grid grid-cols-2 grid-gap-2">

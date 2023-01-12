@@ -65,7 +65,9 @@ export default function Calendar({
             <div key={`${calendarId}-${count}`} className="grid grid-cols-6">
                 <div className="col-span-1 border-t-[1px] border-t-slate-500 border-b-slate-500">
                     <p>{ count == 0 ? startTimeLocal?.format("hh:mm a") : incrementToTime(startTimeLocal) }</p>
-                    <p>{ startTimeLocal.format("hh:mm a") === ("12:00 am") && startTimeLocal.format('LL') }</p>
+                    <p>{ (startTimeLocal.format("hh:mm a") === ("12:00 am") || hourSections.length === 0) 
+                            && startTimeLocal.format('LL') }
+                    </p>
                 </div>
                 <div className="
                     col-span-4
@@ -127,7 +129,9 @@ export default function Calendar({
                 </div>
                 <div className="col-span-1 border-t-[1px] border-t-slate-500 border-b-slate-500 text-right">
                     <p>{ count == 0 ? startTimeForeign?.format("hh:mm a") : incrementToTime(startTimeForeign)  }</p>
-                    <p>{ startTimeForeign.format("hh:mm a") === ("12:00 am") && startTimeForeign.format('LL') }</p>
+                    <p>{ (startTimeForeign.format("hh:mm a") === ("12:00 am") || hourSections.length === 0)
+                            && startTimeForeign.format('LL') }
+                    </p>
                 </div>
             </div>
         )
