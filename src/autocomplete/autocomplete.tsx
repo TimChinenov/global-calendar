@@ -15,10 +15,12 @@ export default function Autocomplete({ title, setValue } : { title: string, setV
         timezones.forEach((timezone) => {
             if (timezone.toLowerCase().includes(fieldInput.toLowerCase()) && count < 7) {
                 timezonesSelection.push(
-                    <li key={timezone} onClick={() => {
+                    <li className=""
+                        key={timezone} onClick={() => {
                         setValue(timezone)
-                        setSelectedOption(timezone)}
-                    }>{timezone}</li>
+                        setSelectedOption(timezone)
+                        setIsSelected(false)}
+                    }><a className="">{timezone}</a></li>
                 )
                 count += 1
             }
@@ -42,7 +44,7 @@ export default function Autocomplete({ title, setValue } : { title: string, setV
                     setSelectedOption(event.target.value)
                     updateOptions(event.target.value)}}/>
             <div className={`dropdown ${isSelected ? "dropdown-open": ""} pt-2`}>
-                <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 bg-base-200 w-80">
                     { options }
                 </ul>
             </div>
