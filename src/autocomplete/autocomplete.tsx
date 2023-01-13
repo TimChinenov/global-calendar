@@ -35,7 +35,7 @@ export default function Autocomplete({ title, setValue } : { title: string, setV
                 <span className="label-text">{title}</span>
             </label>
             <input
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full md:max-w-xs"
                 type="text"
                 value={selectedOption}
                 onFocus={() => setIsSelected(true)}

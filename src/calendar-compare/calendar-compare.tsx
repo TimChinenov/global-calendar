@@ -20,11 +20,11 @@ export function CalendarCompare() {
     })
 
     return(
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 grid-cols-2 mx-24">
-            <div className="grid-rows-2 mx-8">
-                <div className="fixed">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 md:mx-24">
+            <div className="md:grid-rows-2 mx-8">
+                <div className="md:fixed">
                     <h2 className="pt-2">Thyme Zone Planner</h2>
-                    <div className="grid grid-cols-2 gap-4 pb-4">
+                    <div className="grid md:grid-cols-2 md:gap-4 md:pb-4">
                         <Autocomplete
                             title={"Local Timezone"}
                             setValue={(value: string) => setFirstTimezone(moment.tz.zone(value))}/>
@@ -33,14 +33,14 @@ export function CalendarCompare() {
                             setValue={(value: string) => setSecondTimezone(moment.tz.zone(value))}/>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid md:grid-cols-2 md:gap-4">
                         <div>
                             <label className="label">
                                 <span className="label-text">Local Date</span>
                             </label>
-                            <input 
+                            <input
                                 type="date"
-                                className="input input-bordered w-full max-w-xs"
+                                className="input input-bordered w-full md:max-w-xs"
                                 onBlur={(event) => {
                                     console.log(event.target.value)
                                     setDate((moment(event.target.value)))
@@ -59,13 +59,13 @@ export function CalendarCompare() {
                                     let minutes = parseInt(event.target.value)
                                     setMeetingLength(minutes)
                                 }} 
-                                className="input input-bordered w-full max-w-xs" />
+                                className="input input-bordered w-full md:max-w-xs" />
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="mx-8 pt-12">
+            <div className="mx-4 md:mx-8 pt-6 md:pt-12">
                 <Calendar
                     calendarId={1}
                     meeting={getMeeting(firstTimezone ?? null, meetingLength)}

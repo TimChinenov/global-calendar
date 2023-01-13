@@ -140,7 +140,7 @@ export default function Calendar({
 
     return (
         <div className="h-full w-full ">
-            <div className="w-full flex flex-row place-content-end">
+            <div className="w-full flex flex-row place-content-center md:place-content-end">
                 <div className="form-control pr-4">
                     <label className="cursor-pointer label">
                         <span className="label-text pr-2">Only Waking Hours</span> 
