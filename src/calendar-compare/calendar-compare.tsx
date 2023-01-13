@@ -9,7 +9,7 @@ export function CalendarCompare() {
     const [secondTimezone, setSecondTimezone] = useState<MomentZone | null>();
 
     const [meetingLength, setMeetingLength] = useState(1);
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState(moment());
 
     const timezones: string[] = moment.tz.names();
     const timezonesSelection: any[] = []
@@ -23,7 +23,7 @@ export function CalendarCompare() {
         <div className="grid sm:grid-cols-1 md:grid-cols-2 grid-cols-2 mx-24">
             <div className="grid-rows-2 mx-8">
                 <div className="fixed">
-                    <h2 className="pt-2">Zone Plan</h2>
+                    <h2 className="pt-2">Thyme Zone Planner</h2>
                     <div className="grid grid-cols-2 gap-4 pb-4">
                         <Autocomplete
                             title={"Local Timezone"}
@@ -41,7 +41,10 @@ export function CalendarCompare() {
                             <input 
                                 type="date"
                                 className="input input-bordered w-full max-w-xs"
-                                onBlur={(event) => setDate(new Date(event.target.value))}/>
+                                onBlur={(event) => {
+                                    console.log(event.target.value)
+                                    setDate((moment(event.target.value)))
+                                }}/>
                         </div>
                         
                         <div>

@@ -12,7 +12,7 @@ export default function Calendar({
     } : { 
         calendarId: number,
         meeting: Meeting,
-        date: Date
+        date: Moment
         timezone1: MomentZone | null,
         timezone2?: MomentZone | null}) {
 
@@ -31,7 +31,10 @@ export default function Calendar({
     let startTimeForeign: Moment = moment.tz()
 
     if (timezone1 && timezone2) {
-        startTimeLocal = moment(getFormattedDate(date)).tz(timezone1.name)?.startOf("day")
+        startTimeLocal = moment(date.format('YYYY-MM-DD')).tz(timezone1.name)?.startOf("day")
+        
+        // moment for some reason decrements the input date by one day
+        startTimeLocal.add(1, 'day')
         startTimeForeign = startTimeLocal?.clone().tz(timezone2.name)
     }
 
@@ -215,12 +218,12 @@ function parseTimezoneName(name: string): string {
     return name.replaceAll("_", " ")
 }
 
-function getFormattedDate(date: Date): string {
-    let year = date.getFullYear().toString();
-    let month = (date.getMonth() + 1).toString()
-    let day = date.getDate().toString()
-    month = month.length < 2 ? "0" + month : month
-    day = day.length < 2 ? "0" + day : day
+// function getFormattedDate(date: ): string {
+//     let year = date.getFullYear().toString();
+//     let month = (date.getMonth() + 1).toString()
+//     let day = date.getDate().toString()
+//     month = month.length < 2 ? "0" + month : month
+//     day = day.length < 2 ? "0" + day : day
 
-    return `${year}-${month}-${day}`
-}
+//     return `${year}-${month}-${day}`
+// }
