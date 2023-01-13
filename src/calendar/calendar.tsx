@@ -25,8 +25,6 @@ export default function Calendar({
     const businessHourStart = 6
     const businessHourEnd = 18
 
-
-    let usedDates: Set<string> = new Set<string>();
     let hourSections: any[] = []
 
     let startTimeLocal: Moment = moment.tz()
@@ -79,12 +77,12 @@ export default function Calendar({
                         onClick={() => {
                             setBoxStart(currentCount + 2)
                         }}>
-                            { (boxStart && boxStart == currentCount + 2) &&
+                            { (boxStart && boxStart == currentCount + 2) ?
                                 getMeetingBlock(
                                     startTimeLocal.clone(),
                                     startTimeForeign.clone(),
                                     0,
-                                    meeting.lengthMinutes)
+                                    meeting.lengthMinutes) : <div></div>
                             }
                     </div>
                     <div
@@ -92,12 +90,12 @@ export default function Calendar({
                         onClick={() => {
                             setBoxStart(currentCount + 4)
                         }}>
-                            { (boxStart && boxStart == currentCount + 4) &&
+                            { (boxStart && boxStart == currentCount + 4) ?
                                 getMeetingBlock(
                                     startTimeLocal.clone(),
                                     startTimeForeign.clone(),
                                     15,
-                                    meeting.lengthMinutes)
+                                    meeting.lengthMinutes) : <div></div>
                             }
                     </div>
                     <div
@@ -105,12 +103,12 @@ export default function Calendar({
                         onClick={() => {
                             setBoxStart(currentCount + 6)
                         }}>
-                            { (boxStart && boxStart == currentCount + 6) &&
+                            { (boxStart && boxStart == currentCount + 6) ?
                                 getMeetingBlock(
                                     startTimeLocal.clone(),
                                     startTimeForeign.clone(),
                                     30,
-                                    meeting.lengthMinutes)
+                                    meeting.lengthMinutes) : <div></div>
                             }
                     </div>
                     <div
@@ -118,12 +116,12 @@ export default function Calendar({
                         onClick={() => {
                             setBoxStart(currentCount + 8)
                         }}>
-                            { (boxStart && boxStart == currentCount + 8) &&
+                            { (boxStart && boxStart == currentCount + 8) ?
                                 getMeetingBlock(
                                     startTimeLocal.clone(),
                                     startTimeForeign.clone(),
                                     45,
-                                    meeting.lengthMinutes)
+                                    meeting.lengthMinutes) : <div></div>
                             }
                     </div>
                 </div>
@@ -220,7 +218,7 @@ function parseTimezoneName(name: string): string {
 function getFormattedDate(date: Date): string {
     let year = date.getFullYear().toString();
     let month = (date.getMonth() + 1).toString()
-    let day = date.getDay().toString()
+    let day = date.getDate().toString()
     month = month.length < 2 ? "0" + month : month
     day = day.length < 2 ? "0" + day : day
 
