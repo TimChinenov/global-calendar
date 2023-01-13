@@ -34,8 +34,6 @@ export default function Calendar({
     if (timezone1 && timezone2) {
         startTimeLocal = moment(date.format('YYYY-MM-DD')).tz(timezone1.name)?.startOf("day")
         
-        // moment for some reason decrements the input date by one day
-        startTimeLocal.add(1, 'day')
         startTimeForeign = startTimeLocal?.clone().tz(timezone2.name)
     }
 
@@ -224,13 +222,3 @@ function incrementToTime(startTime: Moment): string {
 function parseTimezoneName(name: string): string {
     return name.replaceAll("_", " ")
 }
-
-// function getFormattedDate(date: ): string {
-//     let year = date.getFullYear().toString();
-//     let month = (date.getMonth() + 1).toString()
-//     let day = date.getDate().toString()
-//     month = month.length < 2 ? "0" + month : month
-//     day = day.length < 2 ? "0" + day : day
-
-//     return `${year}-${month}-${day}`
-// }

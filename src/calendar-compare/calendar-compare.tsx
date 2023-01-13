@@ -42,8 +42,7 @@ export function CalendarCompare() {
                                 alt="date input"
                                 type="date"
                                 className="input input-bordered w-full md:max-w-xs"
-                                onBlur={(event) => {
-                                    console.log(event.target.value)
+                                onChange={(event) => {
                                     setDate((moment(event.target.value)))
                                 }}/>
                         </div>
