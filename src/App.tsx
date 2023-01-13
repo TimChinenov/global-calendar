@@ -13,6 +13,9 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      <footer className='md:mt-12 text-right'>
+        <p className='text-sm pr-12 md:pr-24 text-primary'>App made by <a href="https://technically-writing.io">Tim Chinenov</a></p>
+      </footer>
     </div>
   );
 }
