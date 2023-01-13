@@ -6,5 +6,13 @@ Thymezones is timezone converter and visualizer application for assisting with s
 ## About
 Application is written in React and uses DaisyUI as the component library.
 
+## Running Locally
+The application can be run locally like any other React app.
+
+```
+npm ci
+npm run start
+```
+
 ## Contributions
 Users are welcome to suggest pull requests to be reviewed.
