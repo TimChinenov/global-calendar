@@ -20,9 +20,9 @@ export function CalendarCompare() {
     })
 
     return(
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 md:mx-24">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 md:mx-20">
             <div className="md:grid-rows-2 mx-8">
-                <div className="md:fixed">
+                <div>
                     <h2 className="pt-2">Thyme Zone Planner</h2>
                     <div className="grid md:grid-cols-2 md:gap-4 md:pb-4">
                         <Autocomplete
