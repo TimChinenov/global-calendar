@@ -37,6 +37,7 @@ export default function Autocomplete({ title, setValue } : { title: string, setV
                 <span className="label-text">{title}</span>
             </label>
             <input
+                alt="timezone selection"
                 className="input input-bordered w-full md:max-w-xs"
                 type="text"
                 value={selectedOption}

@@ -39,6 +39,7 @@ export function CalendarCompare() {
                                 <span className="label-text">Local Date</span>
                             </label>
                             <input
+                                alt="date input"
                                 type="date"
                                 className="input input-bordered w-full md:max-w-xs"
                                 onBlur={(event) => {
@@ -49,9 +50,10 @@ export function CalendarCompare() {
                         
                         <div>
                             <label className="label">
-                                <span className="label-text">Meeting Length (Minutes)</span>
+                                <span className="label-text">Meeting Length (Min)</span>
                             </label>
                             <input
+                                alt="meeting length in minutes"
                                 type="number"
                                 placeholder="Meeting Length in Minutes"
                                 value={meetingLength}
@@ -59,7 +61,8 @@ export function CalendarCompare() {
                                     let minutes = parseInt(event.target.value)
                                     setMeetingLength(minutes)
                                 }} 
-                                className="input input-bordered w-full md:max-w-xs" />
+                                className={`input input-bordered w-full md:max-w-xs ${meetingLength < 15 ? "input-error" : ""}`} />
+                            { meetingLength < 15 && <p className="text-error">Meeting minimum is 15 min</p>}    
                         </div>
                     </div>
                 </div>
