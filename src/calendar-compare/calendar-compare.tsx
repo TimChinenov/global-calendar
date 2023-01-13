@@ -8,7 +8,7 @@ export function CalendarCompare() {
     const [firstTimezone, setFirstTimezone] = useState<MomentZone | null>();
     const [secondTimezone, setSecondTimezone] = useState<MomentZone | null>();
 
-    const [meetingLength, setMeetingLength] = useState(1);
+    const [meetingLength, setMeetingLength] = useState(30);
     const [date, setDate] = useState(moment());
 
     const timezones: string[] = moment.tz.names();
