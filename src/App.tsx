@@ -1,3 +1,4 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { CalendarCompare } from './calendar-compare/calendar-compare';
 
@@ -6,7 +7,12 @@ function App() {
     <div className="App">
       <header className="App-header">
       </header>
-      <CalendarCompare />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={ <CalendarCompare /> }>
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
