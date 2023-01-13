@@ -205,7 +205,7 @@ function getMeetingBlock(
 
     return (
         <div
-            className="w-full bg-[#9fba86] absolute z-10 rounded"
+            className="w-11/12 bg-[#9fba86] absolute z-10 rounded-lg left-0 right-0 mr-auto ml-auto"
             style={{height: `${24 * meetingLength}px`}}>
                 <div className="grid grid-cols-2">
                     <p className="text-sm text-center">{startTimeLocal.format("hh:mm a")} - {startTimeLocal.add(meetingLength * 15, "minutes").format("hh:mm a")} {startTimeLocal.format('z')}</p>
