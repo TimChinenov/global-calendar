@@ -197,6 +197,10 @@ function getMeetingBlock(
         return
     }
 
+    if (meetingLength > 180) {
+        return
+    }
+
     startTimeLocal.add(minuteOffset, "minutes")
     startTimeForeign.add(minuteOffset, "minutes")
     meetingLength = meetingLength < 15 ? 1 : meetingLength / 15

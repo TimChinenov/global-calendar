@@ -31,6 +31,10 @@ export default function Autocomplete({ title, setValue } : { title: string, setV
             }
         })
 
+        if (timezonesSelection.length === 0) {
+            timezonesSelection.push(<li>No timezones found</li>)
+        }
+
         setOptions(timezonesSelection)
     }
     

@@ -41,10 +41,12 @@ export function CalendarCompare() {
                             <input
                                 alt="date input"
                                 type="date"
-                                className="input input-bordered w-full md:max-w-xs"
+                                className={`input input-bordered w-full md:max-w-xs ${!moment(date).isValid() ? "input-error" : ""}`}
+                                placeholder="MM/DD/YYYY"
                                 onChange={(event) => {
                                     setDate((moment(event.target.value)))
                                 }}/>
+                            { !moment(date).isValid() && <p className="text-error">Invalid date format</p>}
                         </div>
                         
                         <div>
@@ -60,8 +62,9 @@ export function CalendarCompare() {
                                     let minutes = parseInt(event.target.value)
                                     setMeetingLength(minutes)
                                 }} 
-                                className={`input input-bordered w-full md:max-w-xs ${meetingLength < 15 ? "input-error" : ""}`} />
-                            { meetingLength < 15 && <p className="text-error">Meeting minimum is 15 min</p>}    
+                                className={`input input-bordered w-full md:max-w-xs ${meetingLength < 15 || meetingLength > 180? "input-error" : ""}`} />
+                            { meetingLength < 15 && <p className="text-error">Meeting minimum is 15 min</p>}   
+                            { meetingLength > 180 && <p className="text-error">Meeting maximum is 180 min</p>}    
                         </div>
                     </div>
                 </div>
