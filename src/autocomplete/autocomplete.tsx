@@ -13,7 +13,9 @@ export default function Autocomplete({ title, setValue } : { title: string, setV
         let count = 0;
 
         timezones.forEach((timezone) => {
-            if (timezone.toLowerCase().includes(fieldInput.toLowerCase()) && count < 7) {
+            if ((timezone.toLowerCase().includes(fieldInput.toLowerCase())
+                || timezone.toLowerCase().replaceAll("_", " ").includes(fieldInput.toLowerCase()))
+                && count < 7) {
                 timezonesSelection.push(
                     <li
                         key={timezone} onClick={() => {

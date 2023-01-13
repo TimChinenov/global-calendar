@@ -26,6 +26,7 @@ export default function Calendar({
     const businessHourEnd = 18
 
     let hourSections: any[] = []
+    let lastCount = 0;
 
     let startTimeLocal: Moment = moment.tz()
     let startTimeForeign: Moment = moment.tz()
@@ -61,6 +62,12 @@ export default function Calendar({
                 
                 continue
         }
+
+        if (count!= 0 && hourSections.length != 0 && lastCount != count - 1) {
+            hourSections.push(<div className="w-full text-center pt-2 pb-6"><strong>. . .</strong></div>)
+        }
+
+        lastCount = count
 
         hourSections.push(
             <div key={`${calendarId}-${count}`} className="grid grid-cols-6">
