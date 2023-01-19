@@ -1,5 +1,5 @@
 import moment from "moment"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 export default function Autocomplete({ title, setValue } : { title: string, setValue: any}) {
     const [isSelected, setIsSelected] = useState(false)
@@ -45,7 +45,7 @@ export default function Autocomplete({ title, setValue } : { title: string, setV
             </label>
             <input
                 alt="timezone selection"
-                className="input input-bordered w-full md:max-w-xs"
+                className="input input-bordered w-full"
                 type="text"
                 value={fieldValue}
                 onFocus={() => setIsSelected(true)}

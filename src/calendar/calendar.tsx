@@ -2,19 +2,22 @@ import moment from "moment";
 import { Moment, MomentZone } from "moment-timezone";
 import { useState } from "react";
 import { Meeting } from "../dtos/meeting";
+import _ from "lodash";
 
 export default function Calendar({
         calendarId,
         meeting,
+        setMeetingTime,
         date,
-        timezone1,
-        timezone2,
+        localTimezone,
+        foreignTimezones
     } : { 
         calendarId: number,
         meeting: Meeting,
+        setMeetingTime: any,
         date: Moment
-        timezone1: MomentZone | null,
-        timezone2?: MomentZone | null}) {
+        localTimezone: MomentZone | null,
+        foreignTimezones: (MomentZone | null)[] }) {
 
     const [boxStart, setBoxStart] = useState(0);
     const [onlyBusinessHours, setOnlyBusinessHours] = useState(false);
@@ -30,32 +33,46 @@ export default function Calendar({
 
     let startTimeLocal: Moment = moment.tz()
     let startTimeForeign: Moment = moment.tz()
+    let startTimesForeign: (Moment | null)[] = []
 
-    if (timezone1 && timezone2) {
-        startTimeLocal = moment(date.format('YYYY-MM-DD')).tz(timezone1.name)?.startOf("day")
+    if (localTimezone) {
+        startTimeLocal = moment(date.format('YYYY-MM-DD')).tz(localTimezone.name)?.startOf("day")
+    }
+
+    for(let foreignTimezone of foreignTimezones) {
+        if (foreignTimezone && startTimeLocal?.isValid()) {
+            startTimesForeign.push(startTimeLocal?.clone().tz(foreignTimezone?.name ?? ""))
+        } else {
+            startTimesForeign.push(null)
+        }
         
-        startTimeForeign = startTimeLocal?.clone().tz(timezone2.name)
     }
 
     for(var count = 0; count < 25; count++) {
         const currentCount = count * 10
 
         if (onlyWakingHours
-            && ((startTimeLocal.hour() <= wakingHourStart || startTimeLocal.hour() >= wakingHourEnd)
-            || (startTimeForeign.hour() <= wakingHourStart || startTimeForeign.hour() >= wakingHourEnd))) {
+            && !timesAreInBounds(wakingHourStart, wakingHourEnd, [startTimeLocal, ...startTimesForeign])) {
                 if (count != 0) {
                     incrementToTime(startTimeLocal)
-                    incrementToTime(startTimeForeign)
+                    startTimesForeign.forEach((foreignTime) => {
+                        if (foreignTime) {
+                            incrementToTime(foreignTime)
+                        }
+                    })
                 }
                 
                 continue
         }
         else if (onlyBusinessHours
-            && ((startTimeLocal.hour() <= businessHourStart || startTimeLocal.hour() >= businessHourEnd)
-            || (startTimeForeign.hour() <= businessHourStart || startTimeForeign.hour() >= businessHourEnd))) {
+            && !timesAreInBounds(businessHourStart, businessHourEnd, [startTimeLocal, ...startTimesForeign])) {
                 if (count != 0) {
                     incrementToTime(startTimeLocal)
-                    incrementToTime(startTimeForeign)
+                    startTimesForeign.forEach((foreignTime) => {
+                        if (foreignTime) {
+                            incrementToTime(foreignTime)
+                        }
+                    })
                 }
                 
                 continue
@@ -66,23 +83,27 @@ export default function Calendar({
         }
 
         lastCount = count
+        let startTimeLocalInstant = startTimeLocal.clone()
+        
+        if (count != 0) {
+            startTimeLocalInstant.add(1, "hours")
+        }
 
         hourSections.push(
-            <div key={`${calendarId}-${count}`} className="grid grid-cols-6">
-                <div className="col-span-1 border-t-[1px] border-t-slate-500 border-b-slate-500">
+            <div key={`${calendarId}-${count}`} className="flex flex-wrapped">
+                <div className="w-[30%] border-t-[1px] border-t-slate-500 border-b-slate-500 text-sm md:text-base">
                     <p>{ count == 0 ? startTimeLocal?.format("hh:mm a") : incrementToTime(startTimeLocal) }</p>
-                    <strong>{ (startTimeLocal.format("hh:mm a") === ("12:00 am") || hourSections.length === 0) 
-                            && startTimeLocal.format('LL') }
+                    <strong className="text-sm">{ (startTimeLocal.format("hh:mm a") === ("12:00 am") || hourSections.length === 0) 
+                            && startTimeLocal.format('ll') }
                     </strong>
                 </div>
-                <div className="
-                    col-span-4
-                    w-full
-                    h-24
-                    border-t-[1px] border-t-slate-500 border-b-slate-500">
+                <div className="w-full border-t-[1px] border-t-slate-500 border-b-slate-500 cursor-pointer">
                     <div
-                        className="relative h-6 border-b-slate-500 hover:border-t-[#df9896] border-t-[1px]"
+                        className="relative h-6 border-b-slate-500 border-t-[1px] border-b-[1px] 
+                            hover:border-t-accent-focus hover:border-b-accent-focus hover:border-t-[2px] hover:border-b-[2px]"
                         onClick={() => {
+                            console.log(startTimeLocalInstant.format("hh:mm a"))
+                            setMeetingTime(startTimeLocalInstant)
                             setBoxStart(currentCount + 2)
                         }}>
                             { (boxStart && boxStart == currentCount + 2) ?
@@ -94,8 +115,10 @@ export default function Calendar({
                             }
                     </div>
                     <div
-                        className="relative h-6 border-t-[1px] border-t-slate-500 border-b-slate-500 hover:border-t-[#df9896]"
+                        className="relative h-6 border-b-slate-500 border-t-[1px] border-b-[1px] 
+                            hover:border-t-accent-focus hover:border-b-accent-focus hover:border-t-[2px] hover:border-b-[2px]"
                         onClick={() => {
+                            setMeetingTime(startTimeLocalInstant.add(15, "minutes"))
                             setBoxStart(currentCount + 4)
                         }}>
                             { (boxStart && boxStart == currentCount + 4) ?
@@ -107,8 +130,10 @@ export default function Calendar({
                             }
                     </div>
                     <div
-                        className="relative h-6 border-t-[1px] border-t-slate-500 border-b-slate-500 hover:border-t-[#df9896]"
+                        className="relative h-6 border-b-slate-500 border-t-[1px] border-b-[1px] 
+                            hover:border-t-accent-focus hover:border-b-accent-focus hover:border-t-[2px] hover:border-b-[2px]"
                         onClick={() => {
+                            setMeetingTime(startTimeLocalInstant.add(30, "minutes"))
                             setBoxStart(currentCount + 6)
                         }}>
                             { (boxStart && boxStart == currentCount + 6) ?
@@ -120,8 +145,10 @@ export default function Calendar({
                             }
                     </div>
                     <div
-                        className="relative h-6 border-t-[1px] border-t-slate-500 border-b-slate-500 hover:border-t-[#df9896]"
+                        className="relative h-6 border-t-[1px] border-b-[1px] 
+                            hover:border-t-accent-focus hover:border-b-accent-focus hover:border-t-[2px] hover:border-b-[2px]"
                         onClick={() => {
+                            setMeetingTime(startTimeLocalInstant.add(45, "minutes"))
                             setBoxStart(currentCount + 8)
                         }}>
                             { (boxStart && boxStart == currentCount + 8) ?
@@ -133,12 +160,22 @@ export default function Calendar({
                             }
                     </div>
                 </div>
-                <div className="col-span-1 border-t-[1px] border-t-slate-500 border-b-slate-500 text-right">
-                    <p>{ count == 0 ? startTimeForeign?.format("hh:mm a") : incrementToTime(startTimeForeign)  }</p>
-                    <strong>{ (startTimeForeign.format("hh:mm a") === ("12:00 am") || hourSections.length === 0)
-                            && startTimeForeign.format('LL') }
-                    </strong>
-                </div>
+                {
+                    startTimesForeign?.map((foreignTimezone: Moment | null) => {
+                        return (
+                            foreignTimezone?.isValid() ?
+                            <div className="w-[30%] border-t-[1px] border-t-slate-500 border-b-slate-500 text-right text-sm md:text-base">
+                                <p>{ count == 0 ? foreignTimezone?.format("hh:mm a") : incrementToTime(foreignTimezone)  }</p>
+                                <strong className="text-sm">{ (foreignTimezone.format("hh:mm a") === ("12:00 am") || hourSections.length === 0)
+                                        && foreignTimezone.format('ll') }
+                                </strong>
+                            </div> 
+                            : 
+                            <div className="w-[30%] border-t-[1px] border-t-slate-500 border-b-slate-500 text-right">
+                            </div>
+                        )
+                    })
+                }
             </div>
         )
     }
@@ -173,13 +210,21 @@ export default function Calendar({
                     </label>
                 </div>
             </div>
-            <div className="grid grid-cols-2">
-                <div>
-                    { parseTimezoneName(timezone1?.name ?? "")}
+
+            <div className="flex flex-wrapped">
+                <div className="w-[30%]">
+                    { parseTimezoneName(localTimezone?.name ?? "")}
                 </div>
-                <div className="text-right">
-                    { parseTimezoneName(timezone2?.name ?? "")}
-                </div>
+                <div className="w-full"></div>
+                {
+                    foreignTimezones.map((value) => {
+                        return (
+                            <div className="w-[30%] text-right col-span-1 text-sm md:text-base pr-1">
+                                { parseTimezoneName(value?.name ?? "")}
+                            </div>
+                        )
+                    })
+                }
             </div>
             <div className="h-full w-full border-b-[1px]">
                 { hourSections }
@@ -193,28 +238,40 @@ function getMeetingBlock(
     startTimeForeign: Moment,
     minuteOffset: number,
     meetingLength: number) {
-    if (!meetingLength) {
-        return
-    }
 
-    if (meetingLength > 180) {
-        return
-    }
+        if (!meetingLength) {
+            return
+        }
 
-    startTimeLocal.add(minuteOffset, "minutes")
-    startTimeForeign.add(minuteOffset, "minutes")
-    meetingLength = meetingLength < 15 ? 1 : meetingLength / 15
+        if (meetingLength > 180) {
+            return
+        }
 
-    return (
-        <div
-            className="w-11/12 bg-[#9fba86] absolute z-10 rounded-lg left-0 right-0 mr-auto ml-auto"
-            style={{height: `${24 * meetingLength}px`}}>
-                <div className="grid grid-cols-2">
-                    <p className="text-sm text-center">{startTimeLocal.format("hh:mm a")} - {startTimeLocal.add(meetingLength * 15, "minutes").format("hh:mm a")} {startTimeLocal.format('z')}</p>
-                    <p className="text-sm text-center">{startTimeForeign.format("hh:mm a")} - {startTimeForeign.add(meetingLength * 15, "minutes").format("hh:mm a")} {startTimeForeign.format('z')}</p>
-                </div>
-        </div>
-    )
+        startTimeLocal.add(minuteOffset, "minutes")
+        startTimeForeign.add(minuteOffset, "minutes")
+        meetingLength = meetingLength < 15 ? 1 : meetingLength / 15
+
+        const middleColumn: any = (contents: any) => {
+            return(
+            <div
+                className="bg-[#9fba86] absolute z-10 rounded-lg w-11/12 left-0 right-0 mr-auto ml-auto"
+                style={{height: `${24 * meetingLength}px`}}>
+                    { contents }
+            </div>)
+        }
+
+        const meetingLengthContent = () => {
+            <div className="grid grid-cols-2">
+                <p className="text-sm text-center">{startTimeLocal.format("hh:mm a")} - {startTimeLocal.add(meetingLength * 15, "minutes").format("hh:mm a")} {startTimeLocal.format('z')}</p>
+                <p className="text-sm text-center">{startTimeForeign.format("hh:mm a")} - {startTimeForeign.add(meetingLength * 15, "minutes").format("hh:mm a")} {startTimeForeign.format('z')}</p>
+            </div>
+        }
+
+        return (
+            <div>
+                { middleColumn(meetingLengthContent()) }
+            </div>
+        )
 }
 
 function incrementToTime(startTime: Moment): string {
@@ -225,4 +282,16 @@ function incrementToTime(startTime: Moment): string {
 
 function parseTimezoneName(name: string): string {
     return name.replaceAll("_", " ")
+}
+
+function timesAreInBounds(startTime: number, endTime: number, times: (Moment | null)[]): boolean {
+    let isInBounds: boolean = true
+
+    for(var time of times) {
+        if (time && (time.hour() <= startTime || time.hour() >= endTime)) {
+            isInBounds = false
+        }
+    }
+
+    return isInBounds
 }
