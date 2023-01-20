@@ -110,7 +110,7 @@ export function CalendarCompare() {
                             <input
                                 alt="date input"
                                 type="date"
-                                className={`input input-bordered w-full md:max-w-xs ${!moment(date).isValid() ? "input-error" : ""}`}
+                                className={`input input-bordered w-full appearance-none ${!moment(date).isValid() ? "input-error" : ""}`}
                                 placeholder="MM/DD/YYYY"
                                 onChange={(event) => {
                                     setDate((moment(event.target.value)))
