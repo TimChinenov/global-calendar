@@ -35,6 +35,8 @@ export default function Calendar({
     let startTimeForeign: Moment = moment.tz()
     let startTimesForeign: (Moment | null)[] = []
 
+    console.log(localTimezone)
+
     if (localTimezone) {
         startTimeLocal = moment(date.format('YYYY-MM-DD')).tz(localTimezone.name)?.startOf("day")
     }
@@ -92,10 +94,12 @@ export default function Calendar({
         hourSections.push(
             <div key={`${calendarId}-${count}`} className="flex flex-wrapped">
                 <div className="w-[30%] border-t-[1px] border-t-slate-500 border-b-slate-500 text-sm md:text-base">
-                    <p>{ count == 0 ? startTimeLocal?.format("hh:mm a") : incrementToTime(startTimeLocal) }</p>
-                    <strong className="text-sm">{ (startTimeLocal.format("hh:mm a") === ("12:00 am") || hourSections.length === 0) 
-                            && startTimeLocal.format('ll') }
-                    </strong>
+                    { localTimezone &&
+                        <div><p>{ count == 0 ? startTimeLocal?.format("hh:mm a") : incrementToTime(startTimeLocal) }</p>
+                        <strong className="text-sm">{ (startTimeLocal.format("hh:mm a") === ("12:00 am") || hourSections.length === 0) 
+                                && startTimeLocal.format('ll') }
+                        </strong></div>
+                    }
                 </div>
                 <div className="w-full border-t-[1px] border-t-slate-500 border-b-slate-500 cursor-pointer">
                     <div
@@ -213,17 +217,21 @@ export default function Calendar({
 
             <div className="flex flex-wrapped">
                 <div className="w-[30%]">
-                    { parseTimezoneName(localTimezone?.name ?? "")}
+                    { localTimezone ? parseTimezoneName(localTimezone?.name ?? "") : "Select local timezone"}
                 </div>
                 <div className="w-full"></div>
-                {
+                {   foreignTimezones.length > 0 && foreignTimezones[0] != null ?
                     foreignTimezones.map((value) => {
                         return (
                             <div className="w-[30%] text-right col-span-1 text-sm md:text-base pr-1">
                                 { parseTimezoneName(value?.name ?? "")}
                             </div>
                         )
-                    })
+                    }) 
+                    :
+                    <div className="w-[30%] text-right col-span-1 text-sm md:text-base pr-1">
+                        Select foreign timezone
+                    </div>
                 }
             </div>
             <div className="h-full w-full border-b-[1px]">
